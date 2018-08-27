@@ -35,7 +35,7 @@ import java.util.regex.Matcher
 
 // common maven publishing configuration
 subprojects {
-  group = 'org.elasticsearch'
+  group = 'com.caringo'
   version = org.elasticsearch.gradle.VersionProperties.elasticsearch
   description = "Elasticsearch subproject ${project.path}"
 }

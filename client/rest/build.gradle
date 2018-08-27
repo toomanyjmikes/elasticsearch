@@ -27,7 +27,7 @@ apply plugin: 'nebula.maven-scm'
 targetCompatibility = JavaVersion.VERSION_1_7
 sourceCompatibility = JavaVersion.VERSION_1_7
 
-group = 'org.elasticsearch.client'
+group = 'com.caringo.esclient'
 archivesBaseName = 'elasticsearch-rest-client'
 
 publishing {

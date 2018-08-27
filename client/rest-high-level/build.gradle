@@ -23,7 +23,7 @@ apply plugin: 'elasticsearch.rest-test'
 apply plugin: 'nebula.maven-base-publish'
 apply plugin: 'nebula.maven-scm'
 
-group = 'org.elasticsearch.client'
+group = 'com.caringo.esclient'
 archivesBaseName = 'elasticsearch-rest-high-level-client'
 
 publishing {
@@ -35,8 +35,8 @@ publishing {
 }
 
 dependencies {
-  compile "org.elasticsearch:elasticsearch:${version}"
-  compile "org.elasticsearch.client:elasticsearch-rest-client:${version}"
+  compile "com.caringo:elasticsearch:${version}"
+  compile "com.caringo.esclient:elasticsearch-rest-client:${version}"
   compile "org.elasticsearch.plugin:parent-join-client:${version}"
   compile "org.elasticsearch.plugin:aggs-matrix-stats-client:${version}"
 

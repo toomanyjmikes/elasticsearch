@@ -79,6 +79,7 @@ processResources {
  *****************************************************************************/
 
 repositories {
+  mavenLocal()
   jcenter()
 }
 
