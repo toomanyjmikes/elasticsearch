@@ -117,9 +117,7 @@ dependencies {
 if (project == rootProject) {
 
   repositories {
-    if (System.getProperty("repos.mavenLocal") != null) {
-      mavenLocal()
-    }
+    mavenLocal()
     mavenCentral()
   }
   test.exclude 'org/elasticsearch/test/NamingConventionsCheckBadClasses*'
