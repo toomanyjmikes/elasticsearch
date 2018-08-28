@@ -85,7 +85,7 @@ import java.util.Objects;
  * </ul>
  * </ul>
  */
-public final class Script implements ToXContentObject, Writeable {
+public class Script implements ToXContentObject, Writeable {
 
     public static final Version V_5_1_0_UNRELEASED = Version.fromId(5010099);
 
