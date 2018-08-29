@@ -33,6 +33,10 @@ import org.gradle.util.GradleVersion
 import java.nio.file.Path
 import java.util.regex.Matcher
 
+plugins {
+  id "nebula.source-jar"
+}
+ 
 // common maven publishing configuration
 subprojects {
   group = 'org.elasticsearch'
@@ -170,7 +174,7 @@ task verifyVersions {
  * after the backport of the backcompat code is complete.
  */
 allprojects {
-  ext.bwc_tests_enabled = true
+  ext.bwc_tests_enabled = false
   /*
    * Versions of Elasticsearch 5.1.1 through 5.3.0 inclusive did not start on versions of Linux with cgroups v2 enabled (kernel >= 4.5).
    * This property is provided to all projects that need to check conditionally if they should skip a BWC test task.
