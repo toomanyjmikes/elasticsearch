@@ -213,6 +213,7 @@ public class Script implements ToXContentObject, Writeable {
         private void throwOnlyOneOfType() {
             throw new IllegalArgumentException("must only use one of [" +
                 ScriptType.INLINE.getParseField().getPreferredName() + " + , " +
+                ScriptType.INLINE2.getParseField().getPreferredName() + " + , " +
                 ScriptType.STORED.getParseField().getPreferredName() + " + , " +
                 ScriptType.FILE.getParseField().getPreferredName() + "]" +
                 " when specifying a script");
@@ -246,14 +247,14 @@ public class Script implements ToXContentObject, Writeable {
                     "or [" + ScriptType.FILE.getParseField().getPreferredName() + "] for a file script");
             }
 
-            if (type == ScriptType.INLINE) {
+            if (type == ScriptType.INLINE || type == ScriptType.INLINE2) {
                 if (lang == null) {
                     lang = defaultLang;
                 }
 
                 if (idOrCode == null) {
                     throw new IllegalArgumentException(
-                        "must specify <id> for an [" + ScriptType.INLINE.getParseField().getPreferredName() + "] script");
+                        "must specify <id> for an [" + type.getParseField().getPreferredName() + "] script");
                 }
 
                 if (options.size() > 1 || options.size() == 1 && options.get(CONTENT_TYPE_OPTION) == null) {
@@ -310,6 +311,7 @@ public class Script implements ToXContentObject, Writeable {
     static {
         // Defines the fields necessary to parse a Script as XContent using an ObjectParser.
         PARSER.declareField(Builder::setInline, parser -> parser, ScriptType.INLINE.getParseField(), ValueType.OBJECT_OR_STRING);
+        PARSER.declareField(Builder::setInline, parser -> parser, ScriptType.INLINE2.getParseField(), ValueType.OBJECT_OR_STRING);
         PARSER.declareString(Builder::setStored, ScriptType.STORED.getParseField());
         PARSER.declareString(Builder::setFile, ScriptType.FILE.getParseField());
         PARSER.declareString(Builder::setLang, LANG_PARSE_FIELD);
@@ -436,7 +438,7 @@ public class Script implements ToXContentObject, Writeable {
      * @param params   The user-defined params to be bound for script execution.
      */
     public Script(ScriptType type, String lang, String idOrCode, Map<String, Object> params) {
-        this(type, lang, idOrCode, type == ScriptType.INLINE ? Collections.emptyMap() : null, params);
+        this(type, lang, idOrCode, (type == ScriptType.INLINE || type == ScriptType.INLINE2) ? Collections.emptyMap() : null, params);
     }
 
     /**
@@ -456,7 +458,7 @@ public class Script implements ToXContentObject, Writeable {
         this.idOrCode = Objects.requireNonNull(idOrCode);
         this.params = Collections.unmodifiableMap(Objects.requireNonNull(params));
 
-        if (type == ScriptType.INLINE) {
+        if (type == ScriptType.INLINE || type == ScriptType.INLINE2) {
             this.lang = Objects.requireNonNull(lang);
             this.options = Collections.unmodifiableMap(Objects.requireNonNull(options));
         } else if (type == ScriptType.STORED) {
@@ -507,7 +509,7 @@ public class Script implements ToXContentObject, Writeable {
             @SuppressWarnings("unchecked")
             Map<String, String> options = (Map<String, String>)(Map)in.readMap();
 
-            if (this.type != ScriptType.INLINE && options.isEmpty()) {
+            if (this.type != ScriptType.INLINE && this.type != ScriptType.INLINE2 && options.isEmpty()) {
                 this.options = null;
             } else {
                 this.options = options;
@@ -545,7 +547,7 @@ public class Script implements ToXContentObject, Writeable {
                 this.options = new HashMap<>();
                 XContentType contentType = XContentType.readFrom(in);
                 this.options.put(CONTENT_TYPE_OPTION, contentType.mediaType());
-            } else if (type == ScriptType.INLINE) {
+            } else if (type == ScriptType.INLINE || type == ScriptType.INLINE2) {
                 options = new HashMap<>();
             } else {
                 this.options = null;
@@ -673,11 +675,11 @@ public class Script implements ToXContentObject, Writeable {
 
         String contentType = options == null ? null : options.get(CONTENT_TYPE_OPTION);
 
-        if (type == ScriptType.INLINE) {
+        if (type == ScriptType.INLINE || type == ScriptType.INLINE2) {
             if (contentType != null && builder.contentType().mediaType().equals(contentType)) {
-                builder.rawField(ScriptType.INLINE.getParseField().getPreferredName(), new BytesArray(idOrCode));
+                builder.rawField(type.getParseField().getPreferredName(), new BytesArray(idOrCode));
             } else {
-                builder.field(ScriptType.INLINE.getParseField().getPreferredName(), idOrCode);
+                builder.field(type.getParseField().getPreferredName(), idOrCode);
             }
         } else {
             builder.field(type.getParseField().getPreferredName(), idOrCode);

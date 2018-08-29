@@ -42,6 +42,7 @@ public enum ScriptType implements Writeable {
      * if the language is naturally secure (Painless, Mustache, and Expressions).
      */
     INLINE ( 0 , new ParseField("source", "inline") , false ),
+    INLINE2 ( 0 , new ParseField("inline", "inline") , false ),
 
     /**
      * STORED scripts are saved as part of the {@link org.elasticsearch.cluster.ClusterState}
@@ -73,6 +74,8 @@ public enum ScriptType implements Writeable {
             return STORED;
         } else if (INLINE.id == id) {
             return INLINE;
+        } else if (INLINE2.id == id) {
+            return INLINE2;
         } else {
             throw new IllegalStateException("Error reading ScriptType id [" + id + "] from stream, expected one of [" +
                 FILE.id + " [" + FILE.parseField.getPreferredName() + "], " +
