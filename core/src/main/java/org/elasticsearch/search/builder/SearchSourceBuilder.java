@@ -86,7 +86,8 @@ public final class SearchSourceBuilder extends ToXContentToBytes implements Writ
     public static final ParseField _SOURCE_FIELD = new ParseField("_source");
     public static final ParseField FIELDS_FIELD = new ParseField("fields");
     public static final ParseField STORED_FIELDS_FIELD = new ParseField("stored_fields");
-    public static final ParseField DOCVALUE_FIELDS_FIELD = new ParseField("docvalue_fields", "fielddata_fields");
+    public static final ParseField DOCVALUE_FIELDS_FIELD = new ParseField("docvalue_fields", "fielddata_fields", "fields");
+    public static final ParseField DOCVALUE_FIELDS_FIELD_ES2 = new ParseField("fields", "fielddata_fields", "fields");
     public static final ParseField SCRIPT_FIELDS_FIELD = new ParseField("script_fields");
     public static final ParseField SCRIPT_FIELD = new ParseField("script");
     public static final ParseField IGNORE_FAILURE_FIELD = new ParseField("ignore_failure");
@@ -105,6 +106,8 @@ public final class SearchSourceBuilder extends ToXContentToBytes implements Writ
     public static final ParseField COLLAPSE = new ParseField("collapse");
     public static final ParseField SLICE = new ParseField("slice");
     public static final ParseField ALL_FIELDS_FIELDS = new ParseField("all_fields");
+
+    private static Version esVersion;
 
     public static SearchSourceBuilder fromXContent(QueryParseContext context) throws IOException {
         SearchSourceBuilder builder = new SearchSourceBuilder();
@@ -1147,7 +1150,11 @@ public final class SearchSourceBuilder extends ToXContentToBytes implements Writ
         }
 
         if (docValueFields != null) {
-            builder.startArray(DOCVALUE_FIELDS_FIELD.getPreferredName());
+            if (esVersion.before(Version.V_5_0_0)) {
+                builder.startArray(DOCVALUE_FIELDS_FIELD_ES2.getPreferredName());
+            } else {
+                builder.startArray(DOCVALUE_FIELDS_FIELD.getPreferredName());
+            }
             for (String fieldDataField : docValueFields) {
                 builder.value(fieldDataField);
             }
@@ -1230,6 +1237,16 @@ public final class SearchSourceBuilder extends ToXContentToBytes implements Writ
         builder.endObject();
         return builder;
     }
+
+    // CLOUD-2829 - get/set the es version for the world to know.
+    public static Version getEsVersion() {
+        return esVersion;
+    }
+
+    public static void setEsVersion(Version esVersion) {
+        SearchSourceBuilder.esVersion = esVersion;
+    }
+
 
     public static class IndexBoost implements Writeable, ToXContent {
         private final String index;
