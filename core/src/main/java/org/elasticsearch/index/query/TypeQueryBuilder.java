@@ -22,6 +22,7 @@ package org.elasticsearch.index.query;
 import org.apache.lucene.search.MatchNoDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.util.BytesRef;
+import org.elasticsearch.Version;
 import org.elasticsearch.common.ParseField;
 import org.elasticsearch.common.ParsingException;
 import org.elasticsearch.common.io.stream.StreamInput;
@@ -30,6 +31,7 @@ import org.elasticsearch.common.lucene.BytesRefs;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentParser;
 import org.elasticsearch.index.mapper.DocumentMapper;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -77,7 +79,9 @@ public class TypeQueryBuilder extends AbstractQueryBuilder<TypeQueryBuilder> {
     protected void doXContent(XContentBuilder builder, Params params) throws IOException {
         builder.startObject(NAME);
         builder.field(VALUE_FIELD.getPreferredName(), type.utf8ToString());
-        printBoostAndQueryName(builder);
+        if (SearchSourceBuilder.getEsVersion().onOrAfter(Version.V_5_0_0)) {
+            printBoostAndQueryName(builder);
+        }
         builder.endObject();
     }
 
