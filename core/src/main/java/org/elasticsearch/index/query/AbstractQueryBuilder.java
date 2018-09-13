@@ -24,6 +24,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.spans.SpanBoostQuery;
 import org.apache.lucene.search.spans.SpanQuery;
 import org.apache.lucene.util.BytesRef;
+import org.elasticsearch.Version;
 import org.elasticsearch.action.support.ToXContentToBytes;
 import org.elasticsearch.common.ParseField;
 import org.elasticsearch.common.ParsingException;
@@ -34,6 +35,7 @@ import org.elasticsearch.common.xcontent.AbstractObjectParser;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentLocation;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -85,7 +87,9 @@ public abstract class AbstractQueryBuilder<QB extends AbstractQueryBuilder<QB>> 
     protected abstract void doXContent(XContentBuilder builder, Params params) throws IOException;
 
     protected void printBoostAndQueryName(XContentBuilder builder) throws IOException {
-        builder.field(BOOST_FIELD.getPreferredName(), boost);
+        if ( ! SearchSourceBuilder.getEsVersion().before(Version.V_5_0_0)) {
+            builder.field(BOOST_FIELD.getPreferredName(), boost);
+        }
         if (queryName != null) {
             builder.field(NAME_FIELD.getPreferredName(), queryName);
         }
