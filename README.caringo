@@ -1,0 +1,30 @@
+This is a version of the ES5 client that's been hacked up enough that it
+can talk to ES2 as well, at least for the ways in which we use it. As
+soon as Gateway no longer has to support both 2 & 5, take this out back
+and shoot it.
+
+
+BUILDING
+========
+
+First time only, run:
+
+  ./gradlew
+
+To deploy to your local repo:
+
+  ./gradlew --daemon publishToMavenLocal
+
+To deploy to the snapshot repo:
+
+  ./gradlew --daemon publishMavenPublicationToCaringoSnapshotsRepository
+
+To deploy to the release repo:
+
+  ./gradlew --daemon publishMavenPublicationToCaringoReleasesRepository
+
+[We've never done the releases version, so that might not be correct.]
+
+Unsurprisingly, to clean:
+
+  ./gradlew clean
