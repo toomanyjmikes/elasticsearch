@@ -17,8 +17,23 @@
  * under the License.
  */
 
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
 esplugin {
   description 'This module adds the support parent-child queries and aggregations'
   classname 'org.elasticsearch.join.ParentJoinPlugin'
   hasClientJar = true
+}
+
+publishing {
+
+    publications {
+         Maven(MavenPublication) {
+            artifactId 'parent-join-client'
+            from components.java
+            // artifact sourceJar
+            // artifact javadocJar
+        }
+    }
 }

@@ -36,6 +36,13 @@ publishing {
     nebula {
       artifactId = archivesBaseName
     }
+    Maven(MavenPublication) {
+        artifactId archivesBaseName
+        from components.java
+        artifact sourceJar
+        artifact javadocJar
+    }
+
   }
 }
 

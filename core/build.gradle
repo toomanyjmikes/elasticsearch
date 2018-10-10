@@ -28,10 +28,19 @@ apply plugin: 'nebula.maven-scm'
 apply plugin: 'nebula.source-jar'
 
 publishing {
+
   publications {
     nebula {
       artifactId 'elasticsearch'
     }
+
+    Maven(MavenPublication) {
+        artifactId 'elasticsearch'
+        from components.java
+        artifact sourceJar
+        artifact javadocJar
+    }
+
   }
 }
 

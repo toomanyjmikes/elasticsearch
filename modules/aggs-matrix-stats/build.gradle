@@ -17,8 +17,24 @@
  * under the License.
  */
 
+ apply plugin: 'maven'
+ apply plugin: 'maven-publish'
+
 esplugin {
     description 'Adds aggregations whose input are a list of numeric fields and output includes a matrix.'
     classname 'org.elasticsearch.search.aggregations.matrix.MatrixAggregationPlugin'
     hasClientJar = true
+}
+
+publishing {
+
+    publications {
+         Maven(MavenPublication) {
+            artifactId 'aggs-matrix-stats-client'
+            from components.java
+            // artifact sourceJar
+            // artifact javadocJar
+        }
+    }
+
 }

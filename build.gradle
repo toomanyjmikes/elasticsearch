@@ -36,7 +36,7 @@ import java.util.regex.Matcher
 plugins {
   id "nebula.source-jar"
 }
- 
+
 // common maven publishing configuration
 subprojects {
   group = 'org.elasticsearch'
@@ -51,6 +51,26 @@ configure(subprojects.findAll { it.projectDir.toPath().startsWith(rootPath) }) {
   // we only use maven publish to add tasks for pom generation
   plugins.withType(MavenPublishPlugin).whenPluginAdded {
     publishing {
+
+        repositories {
+            maven {
+                name 'CaringoSnapshots'
+    			url 'https://private.caringo.com/maven/repository/snapshots/'
+                credentials {
+                    username 'build'
+                    password 'build b0i'
+                }
+            }
+            maven {
+                name 'CaringoReleases'
+    			url 'https://private.caringo.com/maven/repository/releases/'
+                credentials {
+                    username 'build'
+                    password 'build b0i'
+                }
+            }
+        }
+
       publications {
         // add license information to generated poms
         all {

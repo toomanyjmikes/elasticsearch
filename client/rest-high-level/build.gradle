@@ -23,6 +23,8 @@ apply plugin: 'elasticsearch.rest-test'
 apply plugin: 'nebula.maven-base-publish'
 apply plugin: 'nebula.source-jar'
 apply plugin: 'nebula.maven-scm'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 group = 'org.elasticsearch.client'
 archivesBaseName = 'elasticsearch-rest-high-level-client'
@@ -31,6 +33,12 @@ publishing {
     publications {
         nebula {
             artifactId = archivesBaseName
+        }
+        Maven(MavenPublication) {
+            artifactId archivesBaseName
+            from components.java
+            artifact sourceJar
+            artifact javadocJar
         }
     }
 }
