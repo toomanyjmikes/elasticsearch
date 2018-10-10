@@ -19,6 +19,7 @@
 
 package org.elasticsearch.search.aggregations.bucket.histogram;
 
+import org.elasticsearch.Version;
 import org.elasticsearch.common.ParsingException;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
@@ -40,6 +41,7 @@ import org.elasticsearch.search.aggregations.support.ValuesSourceAggregatorFacto
 import org.elasticsearch.search.aggregations.support.ValuesSourceConfig;
 import org.elasticsearch.search.aggregations.support.ValuesSourceParserHelper;
 import org.elasticsearch.search.aggregations.support.ValuesSourceType;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.internal.SearchContext;
 
 import java.io.IOException;
@@ -296,7 +298,9 @@ public class DateHistogramAggregationBuilder
         } else {
             builder.field(Histogram.INTERVAL_FIELD.getPreferredName(), dateHistogramInterval.toString());
         }
-        builder.field(Histogram.OFFSET_FIELD.getPreferredName(), offset);
+        if (SearchSourceBuilder.getEsVersion().onOrAfter(Version.V_5_0_0)) {
+            builder.field(Histogram.OFFSET_FIELD.getPreferredName(), offset);
+        }
 
         if (order != null) {
             builder.field(Histogram.ORDER_FIELD.getPreferredName());
